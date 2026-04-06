@@ -116,7 +116,7 @@ header,.wrap,footer{
 .logo-img{
   position:absolute;
 opacity: 0.5; /* 0 = invisible, 1 = solid */;
-  top:-90px;
+  top:-60px;
   left:50%;
   transform:translateX(-50%) translateY(var(--scrollDepth));
   z-index:5;
