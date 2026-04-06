@@ -1,29 +1,420 @@
-.lock{pointer-events:none}a{pointer-events:auto}
-body{margin:0;background:radial-gradient(circle at top,#151525 0,#050509 55%,#000 100%);color:#f5f5f5;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:flex;flex-direction:column;min-height:100vh}
-.top-bar{display:flex;justify-content:flex-end;padding:0 32px;height:60px;align-items:flex-end;position:relative;z-index:10}
-.top-links{display:flex;gap:16px;font-family:"Fira Code","JetBrains Mono",Consolas,monospace;font-size:.85rem;letter-spacing:.08em}
-.top-links a{color:#f5f5f5;text-decoration:none;padding:4px 8px;border-radius:4px;transition:.2s}
-.top-links a:hover{color:#f5f5f5;animation:neonDistort .35s ease-out,microShake .25s linear;background:rgba(255,51,102,.08)}
-.wrap{display:flex;flex-direction:column;align-items:center;margin-top:-20px}
-.logo-img{position:relative;margin-top:-10px;margin-bottom:0;perspective:800px;z-index:1}
-.logo-img img{width:380px;display:block;filter:drop-shadow(0 0 6px rgba(255,40,40,.45));animation:power-on 1.2s ease-out,vhs-wobble 2.4s ease-in-out infinite,slight-glow 3s ease-in-out infinite,crt-bend 12s ease-in-out infinite}
-.logo-img:before,.logo-img:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1}
-.logo-img:before{background:url("logo.png") center/contain no-repeat;mix-blend-mode:screen;opacity:0;filter:drop-shadow(-2px 0 rgba(255,60,60,.9));animation:glitch-r 1.8s infinite steps(2,end),glitch-burst 4.5s infinite,static-pop .25s ease-out}
+/* ===========================
+   GLOBAL + BACKGROUND LAYERS
+   =========================== */
 
-.nav-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;font-family:"Fira Code","JetBrains Mono",Consolas,monospace;font-size:.9rem;letter-spacing:.18em;margin-bottom:0}
-.nav-item{color:#888;text-decoration:none;position:relative;padding:2px 2px;transition:.2s}
-.nav-item:after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,#ff3366,transparent);opacity:0;transform:scaleX(.4);transition:.2s}
+.lock{pointer-events:none}
+a{pointer-events:auto}
 
-.nav-item:hover,
+:root {
+  --scrollDepth: 0px;
+}
+
+body{
+  margin:0;
+  background:url("background.jpeg") center/cover no-repeat fixed;
+  color:#f5f5f5;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+/* Dark overlay */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  z-index:0;
+  pointer-events:none;
+}
+
+/* Fog layer */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(255,255,255,0.02);
+  mix-blend-mode:lighten;
+  animation:fogDrift 40s linear infinite;
+  pointer-events:none;
+  z-index:1;
+}
+
+/* Camera parallax background */
+.camera-parallax{
+  position:fixed;
+  inset:0;
+  background:url("background.jpeg") center/cover no-repeat fixed;
+  z-index:-1;
+  animation:cameraDrift 18s ease-in-out infinite;
+  opacity:0.9;
+  pointer-events:none;
+}
+
+/* Overhead light beam */
+.light-beam{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:180px;
+  background:linear-gradient(to bottom,
+    rgba(255,255,255,0.18),
+    rgba(255,255,255,0.05),
+    rgba(255,255,255,0)
+  );
+  pointer-events:none;
+  z-index:4;
+  animation:beamFlicker 6s infinite;
+}
+
+header,.wrap,footer{
+  position:relative;
+  z-index:5;
+}
+
+/* ===========================
+   TOP LINKS (FIXED)
+   =========================== */
+
+.top-bar{
+  display:flex;
+  justify-content:flex-end;
+  padding:0 32px;
+  height:60px;
+  align-items:flex-end;
+}
+
+.top-links{
+  display:flex;
+  gap:16px;
+  font-family:"Fira Code","JetBrains Mono",Consolas,monospace;
+  font-size:.85rem;
+  letter-spacing:.08em;
+}
+
+.top-links a{
+  color:#f5f5f5;
+  text-decoration:none;
+  padding:4px 8px;
+  border-radius:4px;
+  transition:.2s;
+}
+
 .top-links a:hover{
   color:#f5f5f5;
-  animation:neonDistort .35s ease-out,microShake .25s linear;
+  animation:neonDistort .35s ease-out, microShake .25s linear;
+  background:rgba(255,51,102,.08);
+}
+
+/* ===========================
+   LOGO + DIGITAL EFFECTS
+   =========================== */
+
+/* LOGO CONTAINER — EXACT SAME PARALLAX AS BACKGROUND */
+.logo-img{
+opacity: 0.45;
+  position:absolute;
+  top:-110px;
+  left:50%;
+  transform:translateX(-50%) translateY(var(--scrollDepth));
+  z-index:5;
+
+  /* ONLY cameraDrift — this restores the motion */
+  animation:cameraDrift 18s ease-in-out infinite;
+}
+
+/* INNER SHELL — GETS THE TILT (rotateY only) */
+.logo-shell{
+  position:relative;
+  display:inline-block;
+  animation:microTilt 12s ease-in-out infinite;
+
+  -webkit-mask-image:url("logo.png");
+  -webkit-mask-size:contain;
+  -webkit-mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-image:url("logo.png");
+  mask-size:contain;
+  mask-repeat:no-repeat;
+  mask-position:center;
+}
+
+/* Core logo */
+.logo-shell img{
+  width:300px;
+  display:block;
+  filter:
+    drop-shadow(-2px 0 0 rgba(255,0,0,0.4))
+    drop-shadow(2px 0 0 rgba(0,255,255,0.4))
+    drop-shadow(0 0 12px rgba(255,40,40,.9));
+  animation:
+    power-on 1.2s ease-out,
+    vhs-wobble 2.4s ease-in-out infinite,
+    slight-glow 3s ease-in-out infinite,
+    crt-bend 12s ease-in-out infinite,
+    neonFlicker 4s infinite,
+    logoGlitch 6s infinite,
+    staticJitter 3s infinite,
+    buzzFlicker 0.35s infinite;
+}
+
+/* Hover effect (neon pulse) */
+.logo-shell:hover img {
+  filter: drop-shadow(0 0 18px rgba(255,60,60,1));
+  transform: scale(1.02);
+}
+
+/* Pixel grid */
+.logo-shell::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size:3px 3px;
+  mix-blend-mode:overlay;
+  pointer-events:none;
+  z-index:10;
+}
+
+/* Scanlines */
+.logo-shell::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.06) 0px,
+    rgba(255,255,255,0.06) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  mix-blend-mode:soft-light;
+  pointer-events:none;
+  z-index:9;
+}
+
+/* Background inside logo */
+.logo-bg-mask{
+  position:absolute;
+  inset:0;
+  background:url("background.jpeg") center/cover no-repeat fixed;
+  animation:cameraDrift 18s ease-in-out infinite;
+  opacity:0.55;
+  mix-blend-mode:screen;
+  pointer-events:none;
+
+  -webkit-mask-image:url("logo.png");
+  -webkit-mask-size:contain;
+  -webkit-mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-image:url("logo.png");
+  mask-size:contain;
+  mask-repeat:no-repeat;
+  mask-position:center;
+
+  z-index:3;
+}
+
+/* Light sweep */
+.logo-light-sweep{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.35) 40%,
+    transparent 80%
+  );
+  mix-blend-mode:screen;
+  opacity:0;
+  pointer-events:none;
+  animation:lightSweep 7s ease-in-out infinite;
+
+  -webkit-mask-image:url("logo.png");
+  -webkit-mask-size:contain;
+  -webkit-mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-image:url("logo.png");
+  mask-size:contain;
+  mask-repeat:no-repeat;
+  mask-position:center;
+
+  z-index:8;
+}
+
+/* Grime overlay */
+.logo-grime{
+  position:absolute;
+  inset:0;
+  background:url("grime.png") center/cover no-repeat;
+  opacity:0.25;
+  mix-blend-mode:multiply;
+  pointer-events:none;
+  z-index:12;
+
+  -webkit-mask-image:url("logo.png");
+  -webkit-mask-size:contain;
+  -webkit-mask-repeat:no-repeat;
+  -webkit-mask-position:center;
+  mask-image:url("logo.png");
+  mask-size:contain;
+  mask-repeat:no-repeat;
+  mask-position:center;
+}
+
+/* Ambient shadow */
+.logo-img::after{
+  content:"";
+  position:absolute;
+  inset:-20px;
+  background:radial-gradient(
+    circle at 50% -20%,
+    rgba(0,0,0,0.4),
+    rgba(0,0,0,0.0) 70%
+  );
+  mix-blend-mode:multiply;
+  pointer-events:none;
+  z-index:2;
+  animation:ambientShadow 6s ease-in-out infinite;
+}
+
+/* Reflection halo */
+.logo-img::before{
+  content:"";
+  position:absolute;
+  top:100%;
+  left:50%;
+  transform:translateX(-50%) scaleY(-1);
+  width:300px;
+  height:100px;
+  background:url("logo.png") center/contain no-repeat;
+  opacity:.12;
+  filter:blur(8px)
+         drop-shadow(-3px 0 6px rgba(0,255,255,.4))
+         drop-shadow(3px 0 6px rgba(255,0,0,.4));
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* Reflection ripple */
+.logo-img::after{
+  content:"";
+  position:absolute;
+  top:100%;
+  left:50%;
+  transform:translateX(-50%) scaleY(-1);
+  width:300px;
+  height:100px;
+  background:url("logo.png") center/contain no-repeat;
+  opacity:.18;
+  filter:blur(6px) drop-shadow(0 0 10px rgba(255,40,40,.6));
+  pointer-events:none;
+  animation:reflectionFlicker 4s infinite, puddleRipple 6s ease-in-out infinite;
+}
+
+/* ===========================
+   NAVIGATION
+   =========================== */
+
+.wrap{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.nav-row{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:12px;
+  font-family:"Fira Code","JetBrains Mono",Consolas,monospace;
+  font-size:.9rem;
+  letter-spacing:.18em;
+}
+
+.nav-item{
+  color:#888;
+  text-decoration:none;
+  position:relative;
+  padding:2px 2px;
+  transition:.2s;
+}
+
+.nav-item:after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#ff3366,transparent);
+  opacity:0;
+  transform:scaleX(.4);
+  transition:.2s;
+}
+
+.nav-item:hover{
+  color:#f5f5f5;
+  animation:neonDistort .35s ease-out, microShake .25s linear;
 }
 
 .nav-item:hover:after{
   opacity:1;
   transform:scaleX(1);
   filter:drop-shadow(0 0 6px #ff3366);
+}
+
+/* ===========================
+   FOOTER
+   =========================== */
+
+footer{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  padding:10px 24px 12px;
+  font-size:.75rem;
+  color:#888;
+  text-align:center;
+  background:rgba(0,0,0,0.35);
+  backdrop-filter:blur(4px);
+  border-top:1px solid rgba(255,255,255,0.05);
+  z-index:10;
+}
+
+.warning{
+  color:#ff3b3b;
+  font-family:"Fira Code","JetBrains Mono",Consolas,monospace;
+  margin-bottom:2px;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+
+/* ===========================
+   ANIMATIONS
+   =========================== */
+
+/* FIXED microTilt — rotateY only */
+@keyframes microTilt{
+  0%   { transform: translateX(-50%) rotateY(0deg); }
+  25%  { transform: translateX(-50%) rotateY(-1deg); }
+  50%  { transform: translateX(-50%) rotateY(1deg); }
+  75%  { transform: translateX(-50%) rotateY(-0.5deg); }
+  100% { transform: translateX(-50%) rotateY(0deg); }
+}
+
+@keyframes ambientShadow{
+  0%{opacity:.25}
+  20%{opacity:.4}
+  40%{opacity:.15}
+  60%{opacity:.35}
+  80%{opacity:.2}
+  100%{opacity:.25}
 }
 
 @keyframes neonDistort{
@@ -41,13 +432,97 @@ body{margin:0;background:radial-gradient(circle at top,#151525 0,#050509 55%,#00
   100%{transform:translateX(0)}
 }
 
-footer{padding:8px 24px 10px;font-size:.75rem;color:#888;text-align:center;border-top:1px solid rgba(255,255,255,.04)}
-.warning{color:#ff3b3b;font-family:"Fira Code","JetBrains Mono",Consolas,monospace;margin-bottom:2px}
+@keyframes neonFlicker{
+  0%,19%,21%,23%,25%,54%,56%,100%{
+    opacity:1;
+    filter:drop-shadow(0 0 12px rgba(255,40,40,.9))
+           drop-shadow(0 0 24px rgba(255,60,60,.6));
+  }
+  20%,24%,55%{
+    opacity:.4;
+    filter:drop-shadow(0 0 4px rgba(255,40,40,.4));
+  }
+}
 
-@keyframes power-on{0%{opacity:0;filter:brightness(400%) blur(6px);transform:scaleY(.02)}20%{opacity:1;filter:brightness(250%) blur(2px);transform:scaleY(.2)}40%{filter:brightness(180%) blur(1px);transform:scaleY(1.1)}60%{filter:brightness(120%);transform:scaleY(.95)}100%{opacity:1;filter:brightness(100%);transform:scaleY(1)}}
-@keyframes vhs-wobble{0%,100%{transform:translateX(0) skewX(0)}20%{transform:translateX(-1px) skewX(-.4deg)}40%{transform:translateX(1px) skewX(.3deg)}60%{transform:translateX(-.5px) skewX(-.2deg)}80%{transform:translateX(.5px) skewX(.2deg)}}
-@keyframes slight-glow{0%,100%{filter:drop-shadow(0 0 6px rgba(255,40,40,.45))}50%{filter:drop-shadow(0 0 14px rgba(255,60,60,.9))}}
-@keyframes crt-bend{0%,100%{transform:rotateX(0) rotateY(0)}50%{transform:rotateX(3deg) rotateY(-3deg)}}
-@keyframes glitch-r{0%,100%{opacity:0;transform:translate(0,0)}10%{opacity:.5;transform:translate(-2px,-1px)}30%{opacity:.4;transform:translate(-1px,1px)}55%{opacity:.6;transform:translate(-3px,0)}}
-@keyframes glitch-burst{0%,97%,100%{clip-path:inset(0 0 0 0);transform:none;opacity:0}98%{clip-path:inset(20% 0 40% 0);transform:translate(-6px,2px) skewX(6deg);opacity:.7}99%{clip-path:inset(60% 0 10% 0);transform:translate(6px,-2px) skewX(-6deg);opacity:.7}}
-@keyframes static-pop{0%{opacity:0}5%{opacity:.9}10%{opacity:0}}
+@keyframes logoGlitch{
+  0%,92%,100%{transform:translateX(0);opacity:1}
+  93%{transform:translateX(-3px);opacity:.85}
+  94%{transform:translateX(3px);opacity:.75}
+  95%{transform:translateX(-2px);opacity:.9}
+}
+
+@keyframes staticJitter{
+  0%,100%{filter:brightness(100%) contrast(100%)}
+  10%{filter:brightness(110%) contrast(105%)}
+  20%{filter:brightness(95%) contrast(110%)}
+  30%{filter:brightness(105%) contrast(102%)}
+  40%{filter:brightness(98%) contrast(108%)}
+}
+
+@keyframes buzzFlicker{
+  0%,100%{filter:brightness(100%) contrast(100%)}
+  5%{filter:brightness(115%) contrast(110%)}
+  7%{filter:brightness(90%) contrast(120%)}
+  9%{filter:brightness(130%) contrast(105%)}
+  11%{filter:brightness(95%) contrast(115%)}
+  13%{filter:brightness(120%) contrast(108%)}
+}
+
+@keyframes fogDrift{
+  0%{transform:translateX(0);opacity:.03}
+  50%{transform:translateX(-40px);opacity:.06}
+  100%{transform:translateX(0);opacity:.03}
+}
+
+@keyframes cameraDrift{
+  0%{transform:translate(0,0) scale(1)}
+  25%{transform:translate(-6px,3px) scale(1.01)}
+  50%{transform:translate(4px,-4px) scale(1.015)}
+  75%{transform:translate(-3px,2px) scale(1.01)}
+  100%{transform:translate(0,0) scale(1)}
+}
+
+@keyframes beamFlicker{
+  0%,100%{opacity:.25}
+  10%{opacity:.05}
+  12%{opacity:.3}
+  14%{opacity:.1}
+  16%{opacity:.28}
+  50%{opacity:.22}
+  70%{opacity:.08}
+  72%{opacity:.26}
+}
+
+@keyframes lightSweep{
+  0%{opacity:0;transform:translateX(-120%)}
+  40%{opacity:0;transform:translateX(-120%)}
+  50%{opacity:.6;transform:translateX(0%)}
+  60%{opacity:0;transform:translateX(120%)}
+  100%{opacity:0;transform:translateX(120%)}
+}
+
+@keyframes power-on{
+  0%{opacity:0;filter:brightness(400%) blur(6px);transform:scaleY(.02)}
+  20%{opacity:1;filter:brightness(250%) blur(2px);transform:scaleY(.2)}
+  40%{filter:brightness(180%) blur(1px);transform:scaleY(1.1)}
+  60%{filter:brightness(120%);transform:scaleY(.95)}
+  100%{opacity:1;filter:brightness(100%);transform:scaleY(1)}
+}
+
+@keyframes vhs-wobble{
+  0%,100%{transform:translateX(0) skewX(0)}
+  20%{transform:translateX(-1px) skewX(-.4deg)}
+  40%{transform:translateX(1px) skewX(.3deg)}
+  60%{transform:translateX(-.5px) skewX(-.2deg)}
+  80%{transform:translateX(.5px) skewX(.2deg)}
+}
+
+@keyframes slight-glow{
+  0%,100%{filter:drop-shadow(0 0 6px rgba(255,40,40,.45))}
+  50%{filter:drop-shadow(0 0 14px rgba(255,60,60,.9))}
+}
+
+@keyframes crt-bend{
+  0%,100%{transform:rotateX(0) rotateY(0)}
+  50%{transform:rotateX(3deg) rotateY(-3deg)}
+}
