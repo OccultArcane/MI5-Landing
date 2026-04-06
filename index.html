@@ -10,28 +10,18 @@
 
 <body class="lock">
 
-  <div class="camera-parallax"></div>
-  <div class="light-beam"></div>
-
   <header class="top-bar">
     <nav class="top-links">
-      <a href="#" target="https://www.instagram.com/mi5.vu/">[IG]</a>
-      <a href="#" target="https://www.pinterest.com/MI5vu/">[PIN]</a>
+      <a href="https://www.instagram.com/mi5.vu/" target="_blank">[IG]</a>
+      <a href="https://www.pinterest.com/MI5vu/" target="_blank">[PIN]</a>
     </nav>
   </header>
 
   <main class="wrap">
-
     <div class="logo-img">
-      <div class="logo-shell">
-        <a href="https://www.imvu.com/shop/web_search.php?manufacturers_id=106440837" target="_blank">
-          <img src="logo.png" alt="M15 logo">
-        </a>
-
-        <div class="logo-bg-mask"></div>
-        <div class="logo-light-sweep"></div>
-        <div class="logo-grime"></div>
-      </div>
+      <a href="https://www.imvu.com/shop/web_search.php?manufacturers_id=106440837" target="_blank">
+        <img src="logo.png" alt="M15 logo">
+      </a>
     </div>
 
     <nav class="nav-row">
@@ -45,7 +35,6 @@
       <a class="nav-item" href="#"></a>
       <a class="nav-item" href="#"></a>
     </nav>
-
   </main>
 
   <footer>
@@ -53,12 +42,12 @@
     <div class="copyright">© 2026 all rights reserved</div>
   </footer>
 
-<script>
-document.addEventListener("scroll", () => {
-  const depth = window.scrollY * 0.05;
-  document.documentElement.style.setProperty("--scrollDepth", depth + "px");
-});
-</script>
+  <!-- IFRAME MODE DETECTION -->
+  <script>
+    if (window.self !== window.top) {
+      document.body.classList.add("iframe-mode");
+    }
+  </script>
 
 </body>
 </html>
