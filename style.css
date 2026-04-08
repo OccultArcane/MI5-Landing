@@ -144,6 +144,7 @@ opacity: 0.5; /* 0 = invisible, 1 = solid */;
 /* Core logo */
 .logo-shell img{
   width:150px;
+height:150px;
   display:block;
   filter:
     drop-shadow(-2px 0 0 rgba(255,0,0,0.4))
