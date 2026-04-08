@@ -95,7 +95,7 @@ header,.wrap,footer{
 }
 
 .top-links a{
-  color:#f5f5f5;
+  color:#353839;
   text-decoration:none;
   padding:4px 8px;
   border-radius:4px;
@@ -143,8 +143,8 @@ opacity: 0.5; /* 0 = invisible, 1 = solid */;
 
 /* Core logo */
 .logo-shell img{
-  width:150px;
-height:150px;
+  width:100px;
+height:100px;
   display:block;
   filter:
     drop-shadow(-2px 0 0 rgba(255,0,0,0.4))
